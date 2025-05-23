@@ -20,6 +20,12 @@ router.post("/", async (req, res) => {
       { expiresIn: "1d" }
     )
 
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'Lax'
+    })
+
     res.json({ token })
   } catch (error) {
     res.status(500).json(error)
