@@ -1,10 +1,13 @@
 const express = require("express")
 const app = express()
 
-app.use(express.json())
+const userRouter = require("./routes/users")
+const appointmentRouter = require("./routes/appointments")
+const authRouter = require("./routes/auth")
 
-app.get("/", (req, res) => {
-    res.send("Tomale")
-})
+app.use(express.json())
+app.use("/users", userRouter)
+app.use("/appointments", appointmentRouter)
+app.use("/login", authRouter)
 
 module.exports = app
