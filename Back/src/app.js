@@ -15,6 +15,6 @@ app.use(cookieParser())
 
 app.use("/users", userRouter)
 app.use("/appointments", appointmentRouter)
-app.use("/login", authRouter)
+app.use("/", authRouter)
 
 module.exports = app

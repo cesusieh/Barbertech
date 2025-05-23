@@ -1,35 +1,34 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import PrivateRoute from './components/Auth/PrivateRoute';
-import Login from './components/Auth/Login';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import Login from './pages/Login';
 import Navbar from './components/Navbar';
-import UserList from './components/Users/UserList';
-import AppointmentList from './components/Appointments/AppointmentList';
-import AppointmentForm from './components/Appointments/AppointmentForm';
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Verifica autenticação ao carregar
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('http://localhost:3333/check-auth', {
+          credentials: 'include'
+        });
+        setIsLoggedIn(response.ok);
+      } catch (error) {
+        console.error('Erro ao verificar autenticação:', error);
+      }
+    };
+    checkAuth();
+  }, []);
+
   return (
     <Router>
-      <div className="min-h-screen bg-gray-100">
-        <Navbar />
-        <div className="container mx-auto p-4">
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            
-            {/* Rotas protegidas */}
-            <Route element={<PrivateRoute roles={['GERENTE']} />}>
-              <Route path="/users" element={<UserList />} />
-            </Route>
-            
-            <Route element={<PrivateRoute />}>
-              <Route path="/appointments" element={<AppointmentList />} />
-              <Route path="/appointments/new" element={<AppointmentForm />} />
-            </Route>
-            
-            <Route path="/" element={<div>Bem-vindo ao sistema de agendamentos</div>} />
-          </Routes>
-        </div>
-      </div>
+      <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+      <Routes>
+        <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
+        <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
+      </Routes>
     </Router>
   );
 }

@@ -1,47 +1,45 @@
-import React, { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Import atualizado
-import { AuthContext } from '../contexts/AuthContext';
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
-const Navbar = () => {
-  const { user, logout } = useContext(AuthContext);
-  const navigate = useNavigate(); // Hook atualizado
+const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
+  const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login'); // Navegação atualizada
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('http://localhost:3333/logout', {
+        method: 'POST',
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        localStorage.removeItem('token');
+        setIsLoggedIn(false);  // Atualiza o estado primeiro
+        navigate('/');         // Depois redireciona
+      }
+    } catch (error) {
+      console.error('Erro no logout:', error);
+    }
   };
 
   return (
-    <nav className="bg-gray-800 text-white p-4">
-      <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="text-xl font-bold">
-          Barbearia
-        </Link>
-        <div className="flex items-center space-x-4">
-          {user ? (
-            <>
-              {user.papel === 'GERENTE' && (
-                <Link to="/users" className="hover:text-gray-300">
-                  Usuários
-                </Link>
-              )}
-              <Link to="/appointments" className="hover:text-gray-300">
-                Agendamentos
-              </Link>
-              <span className="text-gray-300">Olá, {user.nome}</span>
-              <button
-                onClick={handleLogout}
-                className="bg-red-500 px-3 py-1 rounded hover:bg-red-600"
-              >
-                Sair
-              </button>
-            </>
-          ) : (
-            <Link to="/login" className="hover:text-gray-300">
-              Login
-            </Link>
-          )}
-        </div>
+    <nav className="flex justify-between items-center p-4 bg-gray-800 text-white">
+      <div className="text-xl font-bold">Meu Site</div>
+      <div className="flex gap-4">
+        {isLoggedIn ? (
+          <button 
+            onClick={handleLogout}
+            className="text-white px-4 py-2 rounded bg-gray-600 hover:bg-gray-700 transition"
+          >
+            Logout
+          </button>
+        ) : (
+          <Link 
+            to="/login" 
+            className="text-white px-4 py-2 rounded bg-gray-600 hover:bg-gray-700 transition"
+          >
+            Login
+          </Link>
+        )}
       </div>
     </nav>
   );
