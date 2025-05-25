@@ -12,9 +12,9 @@ const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
       });
 
       if (response.ok) {
-        localStorage.removeItem('token');
-        setIsLoggedIn(false);  // Atualiza o estado primeiro
-        navigate('/');         // Depois redireciona
+        localStorage.removeItem('user');
+        setIsLoggedIn(false);
+        navigate('/');
       }
     } catch (error) {
       console.error('Erro no logout:', error);
@@ -26,12 +26,20 @@ const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
       <div className="text-xl font-bold">Meu Site</div>
       <div className="flex gap-4">
         {isLoggedIn ? (
-          <button 
-            onClick={handleLogout}
-            className="text-white px-4 py-2 rounded bg-gray-600 hover:bg-gray-700 transition"
-          >
-            Logout
-          </button>
+          <>
+            <Link 
+              to="/agendamentos" 
+              className="text-white px-4 py-2 rounded bg-gray-600 hover:bg-gray-700 transition"
+            >
+              Agendamentos
+            </Link>
+            <button 
+              onClick={handleLogout}
+              className="text-white px-4 py-2 rounded bg-red-600 hover:bg-red-700 transition"
+            >
+              Logout
+            </button>
+          </>
         ) : (
           <Link 
             to="/login" 

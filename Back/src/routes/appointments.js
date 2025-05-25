@@ -3,16 +3,29 @@ const prisma = require("../prismaClient")
 const { authenticateToken, authorizeRoles } = require("../middlewares/auth")
 const router = express.Router()
 
-router.get("/", authenticateToken, authorizeRoles("GERENTE", "BARBEIRO"), async (req, res) => {
+router.get("/", authenticateToken, authorizeRoles("USUARIO", "GERENTE", "BARBEIRO"), async (req, res) => {
   try {
+    const { id, papel } = req.user;
+
+    let where = {};
+
+    if (papel === "USUARIO") {
+      where = { clienteId: id };
+    } else if (papel === "BARBEIRO") {
+      where = { barbeiroId: id };
+    }
+   
     const agendamentos = await prisma.agendamento.findMany({
+      where,
       include: { cliente: true, barbeiro: true },
-    })
-    res.json(agendamentos)
+    });
+
+    res.json(agendamentos);
   } catch (error) {
-    res.status(500).json({ error: "Erro ao buscar agendamentos" })
+    console.error("Erro ao buscar agendamentos:", error);
+    res.status(500).json({ error: "Erro ao buscar agendamentos" });
   }
-})
+});
 
 router.get("/:id", authenticateToken, async (req, res) => {
   try {
@@ -56,6 +69,7 @@ router.post("/", authenticateToken, authorizeRoles("USUARIO"), async (req, res) 
 
     res.status(201).json(novoAgendamento)
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: "Erro ao criar agendamento" })
   }
 })

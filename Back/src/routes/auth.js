@@ -15,7 +15,7 @@ router.post("/login", async (req, res) => {
     if (!senhaValida) return res.status(401).json({ error: "Senha incorreta" })
 
     const token = jwt.sign(
-      { userId: user.id, papel: user.papel },
+      { id: user.id, papel: user.papel },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     )
@@ -33,17 +33,30 @@ router.post("/login", async (req, res) => {
   }
 })
 
-router.get("/verify", async (req, res) => {
+router.get("/me", async (req, res) => {
   const token = req.cookies.token;
-  
-  if (!token) {
-    return res.status(401).json({ isAuthenticated: false });
-  }
 
   try {
-    jwt.verify(token, process.env.JWT_SECRET);
-    res.json({ isAuthenticated: true });
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await prisma.usuario.findUnique({
+      where: { id: decoded.id }, 
+      select: {
+        id: true,
+        nome: true,
+        email: true,
+        papel: true,
+      }
+    });
+
+    if (!user) {
+      return res.status(404).json({ isAuthenticated: false, message: 'Usuário não encontrado' });
+    }
+
+    res.json({
+      user
+    });
   } catch (error) {
+    console.error("Erro ao verificar token:", error);
     res.status(401).json({ isAuthenticated: false });
   }
 });
