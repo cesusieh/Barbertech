@@ -15,14 +15,16 @@ export const getCurrentUser = async () => {
 
 
 export const register = async ({ nome, email, senha }) => {
-  const response = await api.post("/users", {
-    nome, email, senha, papel:"USUARIO"
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.error || 'Erro no cadastro');
+  try {
+    const response = await api.post("/users", {
+      nome,
+      email,
+      senha,
+      papel: "USUARIO"
+    });
+    return response.data;
+  } catch (error) {
+    const message = error.response?.data?.error || 'Erro no cadastro';
+    throw new Error(message);
   }
-
-  return response.data
 };

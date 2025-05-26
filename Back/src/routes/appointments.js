@@ -56,7 +56,7 @@ router.get("/:id", authenticateToken, async (req, res) => {
 router.post("/", authenticateToken, authorizeRoles("USUARIO"), async (req, res) => {
   try {
     const { data, barbeiroId, status } = req.body
-    const clienteId = req.user.userId
+    const clienteId = req.user.id
 
     const novoAgendamento = await prisma.agendamento.create({
       data: {

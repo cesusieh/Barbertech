@@ -21,7 +21,7 @@ const Home = ({ isLoggedIn }) => {
         setBarbeiros(barbeirosData);
 
         const agendamentos = await getAppointments();
-        setAgendamentosRecentes(agendamentos.slice(0, 3)); // pega só os 3 primeiros
+        setAgendamentosRecentes(agendamentos.slice(0, 3)); 
       } catch (err) {
         console.error('Erro:', err);
       }
@@ -46,7 +46,6 @@ const Home = ({ isLoggedIn }) => {
         status: 'AGENDADO'
       });
 
-      // Atualiza a lista após novo agendamento
       const updated = await getAppointments();
       setAgendamentosRecentes(updated.slice(0, 3));
     } catch (err) {

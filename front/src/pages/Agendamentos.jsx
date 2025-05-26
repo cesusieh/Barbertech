@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const Agendamentos = () => {
   const [agendamentos, setAgendamentos] = useState([]);
   const [error, setError] = useState('');
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,6 +18,15 @@ const Agendamentos = () => {
       }
     };
 
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (err) {
+        console.error('Erro ao ler user do localStorage:', err);
+      }
+    }
+
     fetchData();
   }, []);
 
@@ -24,12 +34,15 @@ const Agendamentos = () => {
     <div className="p-8">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Agendamentos</h1>
-        <button
-          onClick={() => navigate('/')}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Agendar
-        </button>
+
+        {user?.papel === 'USUARIO' && (
+          <button
+            onClick={() => navigate('/')}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Agendar
+          </button>
+        )}
       </div>
 
       {error && <p className="text-red-500 mb-4">{error}</p>}
@@ -43,6 +56,7 @@ const Agendamentos = () => {
               <th className="border p-2">ID</th>
               <th className="border p-2">Data</th>
               <th className="border p-2">Barbeiro</th>
+              <th className="border p-2">Cliente</th>
               <th className="border p-2">Status</th>
             </tr>
           </thead>
@@ -53,7 +67,12 @@ const Agendamentos = () => {
                 <td className="border p-2">
                   {new Date(agendamento.data).toLocaleString('pt-BR')}
                 </td>
-                <td className="border p-2">{agendamento.barbeiro?.nome || 'Desconhecido'}</td>
+                <td className="border p-2">
+                  {agendamento.barbeiro?.nome || 'Desconhecido'}
+                </td>
+                <td className="border p-2">
+                  {agendamento.cliente?.nome || 'Desconhecido'}
+                </td>
                 <td className="border p-2">{agendamento.status}</td>
               </tr>
             ))}

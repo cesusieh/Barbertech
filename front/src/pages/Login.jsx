@@ -11,18 +11,25 @@ const Login = ({ setIsLoggedIn }) => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
+  e.preventDefault();
+  setError('');
 
     try {
       if (isLogin) {
-        await login( email, senha );
-        const user = await getCurrentUser()
-        localStorage.setItem("user", JSON.stringify(user))
+        await login(email, senha);
+        const user = await getCurrentUser();
+
+        localStorage.setItem("user", JSON.stringify(user));
         setIsLoggedIn(true);
-        navigate('/');
+
+        // Redirecionamento com base no papel
+        if (user.papel === 'GERENTE') {
+          navigate('/agendamentos', { replace: true });
+        } else {
+          navigate('/', { replace: true });
+        }
       } else {
-        await register( nome, email, senha );
+        await register({ nome, email, senha });
         alert('Cadastro realizado com sucesso! Faça login.');
         setIsLogin(true);
         setEmail('');
