@@ -36,18 +36,11 @@ router.get("/:id", authenticateToken,async (req, res) => {
   }
 })
 
-router.post("/", authenticateToken, async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     let { nome, senha, papel, email } = req.body
 
-    const papeisRestritos = ["GERENTE", "BARBEIRO"]
-    const papelSolicitado = papel.toUpperCase()
-
-    if (papeisRestritos.includes(papelSolicitado)) {
-      if (req.user.papel !== "GERENTE") {
-        return res.status(403).json({ error: "Apenas GERENTE pode criar usuários com papel GERENTE ou BARBEIRO" })
-      }
-    }
+    const papelFormatado = papel.toUpperCase()
 
     const existingUser = await prisma.usuario.findUnique({ where: { email } })
     if (existingUser) {
@@ -57,14 +50,16 @@ router.post("/", authenticateToken, async (req, res) => {
     const hashedPassword = await bcrypt.hash(senha, 10)
 
     const newUser = await prisma.usuario.create({
-      data: { nome, senha: hashedPassword, papel: papelSolicitado, email }
+      data: { nome, senha: hashedPassword, papel: papelFormatado, email }
     })
 
     res.status(201).json(newUser)
   } catch (error) {
+    console.log(error)
     res.status(500).json(error)
   }
 })
+
 
 router.put("/:id", authenticateToken, async (req, res) => {
   try {
