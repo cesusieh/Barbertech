@@ -12,6 +12,7 @@ const Home = ({ isLoggedIn }) => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(''); 
   const [agendamentosRecentes, setAgendamentosRecentes] = useState([]);
 
   useEffect(() => {
@@ -21,7 +22,7 @@ const Home = ({ isLoggedIn }) => {
         setBarbeiros(barbeirosData);
 
         const agendamentos = await getAppointments();
-        setAgendamentosRecentes(agendamentos.slice(0, 3)); 
+        setAgendamentosRecentes([...agendamentos].reverse().slice(0, 3));
       } catch (err) {
         console.error('Erro:', err);
       }
@@ -36,10 +37,12 @@ const Home = ({ isLoggedIn }) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setSuccess('');
 
     try {
       await createAppointment(formData);
-      alert('Agendamento realizado com sucesso!');
+
+      setSuccess('Agendamento realizado com sucesso!');
       setFormData({
         data: '',
         barbeiroId: '',
@@ -47,7 +50,9 @@ const Home = ({ isLoggedIn }) => {
       });
 
       const updated = await getAppointments();
-      setAgendamentosRecentes(updated.slice(0, 3));
+      setAgendamentosRecentes([...updated].reverse().slice(0, 3));
+
+      setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -72,6 +77,12 @@ const Home = ({ isLoggedIn }) => {
           {error && (
             <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
               {error}
+            </div>
+          )}
+
+          {success && (
+            <div className="mb-4 p-3 bg-green-100 text-green-700 rounded">
+              {success}
             </div>
           )}
 

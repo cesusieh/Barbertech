@@ -69,7 +69,6 @@ router.post("/", authenticateToken, authorizeRoles("USUARIO"), async (req, res) 
 
     res.status(201).json(novoAgendamento)
   } catch (error) {
-    console.log(error)
     res.status(500).json({ error: "Erro ao criar agendamento" })
   }
 })
@@ -84,8 +83,8 @@ router.put("/:id", authenticateToken, async (req, res) => {
     const { user } = req
     const podeEditar =
       user.papel === "GERENTE" ||
-      user.userId === agendamento.clienteId ||
-      user.userId === agendamento.barbeiroId
+      user.id === agendamento.clienteId ||
+      user.id === agendamento.barbeiroId
 
     if (!podeEditar) {
       return res.status(403).json({ error: "Acesso negado para atualizar agendamento" })

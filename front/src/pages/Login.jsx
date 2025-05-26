@@ -8,11 +8,13 @@ const Login = ({ setIsLoggedIn }) => {
   const [senha, setSenha] = useState('');
   const [nome, setNome] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setError('');
+    e.preventDefault();
+    setError('');
+    setSuccess('');
 
     try {
       if (isLogin) {
@@ -22,29 +24,37 @@ const Login = ({ setIsLoggedIn }) => {
         localStorage.setItem("user", JSON.stringify(user));
         setIsLoggedIn(true);
 
-        // Redirecionamento com base no papel
-        if (user.papel === 'GERENTE') {
+        if (user.papel === 'GERENTE' || user.papel === "BARBEIRO") {
           navigate('/agendamentos', { replace: true });
         } else {
           navigate('/', { replace: true });
         }
       } else {
         await register({ nome, email, senha });
-        alert('Cadastro realizado com sucesso! Faça login.');
+        setSuccess('Cadastro realizado com sucesso! Faça login.');
         setIsLogin(true);
         setEmail('');
         setSenha('');
         setNome('');
       }
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data.message);
     }
+  };
+
+  const toggleMode = () => {
+    setIsLogin(!isLogin);
+    setError('');
+    setSuccess('');
   };
 
   return (
     <div className="p-8 text-center">
       <h1 className="text-3xl font-bold mb-6">{isLogin ? 'Login' : 'Cadastro'}</h1>
+
       {error && <p className="text-red-500 mb-4">{error}</p>}
+      {success && <p className="text-green-600 mb-4">{success}</p>}
+
       <form onSubmit={handleSubmit} className="max-w-md mx-auto flex flex-col gap-4">
         {!isLogin && (
           <input
@@ -83,7 +93,7 @@ const Login = ({ setIsLoggedIn }) => {
       <p className="mt-4 text-sm text-gray-600">
         {isLogin ? 'Não tem uma conta?' : 'Já tem uma conta?'}{' '}
         <button
-          onClick={() => setIsLogin(!isLogin)}
+          onClick={toggleMode}
           className="text-blue-500 hover:underline"
         >
           {isLogin ? 'Cadastre-se' : 'Fazer login'}

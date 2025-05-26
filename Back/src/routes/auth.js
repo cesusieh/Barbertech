@@ -9,10 +9,10 @@ router.post("/login", async (req, res) => {
 
   try {
     const user = await prisma.usuario.findUnique({ where: { email } })
-    if (!user) return res.status(401).json({ error: "Usuário não encontrado" })
+    if (!user) return res.status(401).json({ message: "Usuário não encontrado" })
 
     const senhaValida = await bcrypt.compare(senha, user.senha)
-    if (!senhaValida) return res.status(401).json({ error: "Senha incorreta" })
+    if (!senhaValida) return res.status(401).json({ message: "Email ou senha incorretos" })
 
     const token = jwt.sign(
       { id: user.id, papel: user.papel },
@@ -28,7 +28,6 @@ router.post("/login", async (req, res) => {
 
     res.json({ token })
   } catch (error) {
-    console.log(error)
     res.status(500).json(error)
   }
 })

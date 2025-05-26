@@ -29,3 +29,18 @@ export const getAppointments = async () => {
     throw new Error(errMsg);
   }
 };
+
+export const updateAppointmentStatus = async (id, novoStatus) => {
+  try {
+    const response = await api.put(
+      `/appointments/${id}`,
+      { status: novoStatus },
+      { withCredentials: true }
+    );
+
+    return response.data;
+  } catch (error) {
+    const errMsg = error.response?.data?.error || 'Erro ao atualizar status';
+    throw new Error(errMsg);
+  }
+};

@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
   const navigate = useNavigate();
-  const location = useLocation(); // ✅ Obtem o path atual
+  const location = useLocation();
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -34,7 +34,6 @@ const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
     }
   };
 
-  // ✅ Verifica se está na página de barbeiros
   const isOnBarbeirosPage = location.pathname === '/barbeiros';
 
   return (
