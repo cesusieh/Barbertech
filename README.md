@@ -9,7 +9,7 @@ Permite que clientes agendem cortes com praticidade. Do lado do barbeiro, é pos
 
 ---
 
-## 👥 Integrantes da Dupla
+## 👥 Integrantes da Equipe
 
 - Carlos Eduardo Sielski Urbim (33755973)
 - Eduardo Bryan Braga Rocha (34731067)
