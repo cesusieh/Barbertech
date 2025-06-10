@@ -6,6 +6,7 @@
 
 O **BarberTech** é uma aplicação voltada para o **agendamento de horários**, **perfil de barbeiros**, e **gestão de serviços oferecidos por barbearias**.  
 Permite que clientes agendem cortes com praticidade. Do lado do barbeiro, é possível organizar a agenda, acompanhar o desempenho do negócio.
+
 [Vídeo](https://www.youtube.com/watch?v=JNWXfye3Dek&ab_channel=Cesu)
 
 ---
